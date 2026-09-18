@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { resolveAttachmentUrl } from '~/utils/attachment'
+
 const { signOut } = useAuth()
 const { data: session } = await useAuthSession()
 const localePath = useLocalePath()
@@ -11,9 +13,11 @@ const initials = computed(() => {
 })
 
 const avatarError = ref(false)
+const avatarUrl = computed(() => resolveAttachmentUrl(user.value?.image))
 watch(user, () => { avatarError.value = false })
 
 const showChangePassword = ref(false)
+const showEditProfile = ref(false)
 const { isOpen: showLoginModal, open: openLoginModal } = useLoginModal()
 
 // An SSO session belongs in the dashboard but may not touch the global user
@@ -27,6 +31,13 @@ function onChangePassword() {
     return
   }
   showChangePassword.value = true
+}
+function onEditProfile() {
+  if (isSsoSession.value) {
+    openLoginModal(LOCAL_AUTH_REASON)
+    return
+  }
+  showEditProfile.value = true
 }
 
 async function handleSignOut() {
@@ -160,7 +171,7 @@ const developerOpen = ref(developerNav.value.some(item => route.path.startsWith(
             <DropdownMenuTrigger as-child>
               <button class="flex items-center gap-3 flex-1 min-w-0 p-2 rounded-xl hover:bg-background transition-colors">
                 <Avatar class="w-8 h-8 shrink-0">
-                  <img v-if="user?.image && !avatarError" :src="user.image" :alt="user?.name" class="aspect-square size-full rounded-full object-cover" referrerpolicy="no-referrer" @error="avatarError = true">
+                  <img v-if="avatarUrl && !avatarError" :src="avatarUrl" :alt="user?.name" class="aspect-square size-full rounded-full object-cover" referrerpolicy="no-referrer" @error="avatarError = true">
                   <AvatarFallback v-else class="bg-accent text-accent-foreground text-sm font-bold">
                     {{ initials }}
                   </AvatarFallback>
@@ -180,6 +191,10 @@ const developerOpen = ref(developerNav.value.some(item => route.path.startsWith(
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <DropdownMenuItem @click="onEditProfile">
+                <Icon name="lucide:user-round-pen" size="16" class="mr-2" />
+                {{ $t('nav.editProfile') }}
+              </DropdownMenuItem>
               <DropdownMenuItem @click="onChangePassword">
                 <Icon name="lucide:key-round" size="16" class="mr-2" />
                 {{ $t('nav.changePassword') }}
@@ -280,7 +295,7 @@ const developerOpen = ref(developerNav.value.some(item => route.path.startsWith(
           <DropdownMenuTrigger as-child>
             <button class="flex items-center gap-3 rounded-xl hover:bg-background transition-colors p-1.5 min-[1360px]:flex-1 min-[1360px]:min-w-0 min-[1360px]:p-2">
               <Avatar class="w-8 h-8 shrink-0">
-                <img v-if="user?.image && !avatarError" :src="user.image" :alt="user?.name" class="aspect-square size-full rounded-full object-cover" referrerpolicy="no-referrer" @error="avatarError = true">
+                <img v-if="avatarUrl && !avatarError" :src="avatarUrl" :alt="user?.name" class="aspect-square size-full rounded-full object-cover" referrerpolicy="no-referrer" @error="avatarError = true">
                 <AvatarFallback v-else class="bg-accent text-accent-foreground text-sm font-bold">
                   {{ initials }}
                 </AvatarFallback>
@@ -299,6 +314,10 @@ const developerOpen = ref(developerNav.value.some(item => route.path.startsWith(
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuItem @click="onEditProfile">
+              <Icon name="lucide:user-round-pen" size="16" class="mr-2" />
+              {{ $t('nav.editProfile') }}
+            </DropdownMenuItem>
             <DropdownMenuItem @click="onChangePassword">
               <Icon name="lucide:key-round" size="16" class="mr-2" />
               {{ $t('nav.changePassword') }}
@@ -326,6 +345,7 @@ const developerOpen = ref(developerNav.value.some(item => route.path.startsWith(
     </main>
 
     <ChangePasswordDialog v-model:open="showChangePassword" />
+    <EditProfileDialog v-model:open="showEditProfile" />
     <LoginModal v-model:open="showLoginModal" />
   </div>
 </template>

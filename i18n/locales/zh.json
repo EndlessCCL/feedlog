@@ -50,6 +50,7 @@
     "workspace": "工作区",
     "sso": "单点登录",
     "dashboard": "控制台",
+    "editProfile": "编辑资料",
     "changePassword": "修改密码",
     "widget": "反馈组件"
   },
@@ -370,6 +371,22 @@
       "setSubtitle": "为你的账号添加密码",
       "submit": "更新密码"
     },
+    "profile": {
+      "title": "编辑资料",
+      "subtitle": "更改你的昵称和头像",
+      "name": "昵称",
+      "namePlaceholder": "其他人看到的名字",
+      "changeAvatar": "更换头像",
+      "removeAvatar": "移除头像",
+      "submit": "保存",
+      "nameRequired": "请填写昵称",
+      "nameTooLong": "昵称不能超过 50 个字符",
+      "invalidImage": "请选择有效的 PNG、JPEG 或 WebP 图片",
+      "imageTooManyPixels": "图片不能超过 2400 万像素",
+      "imageTooLarge": "图片不能超过 5 MB",
+      "uploadFailed": "头像上传失败",
+      "saveFailed": "资料更新失败"
+    },
     "resetPage": {
       "successTitle": "密码已重置",
       "successBody": "你的密码已成功重置。",
@@ -429,7 +446,8 @@
     "success": {
       "verificationResent": "验证邮件已重新发送",
       "passwordUpdated": "密码已更新",
-      "passwordSet": "密码设置成功"
+      "passwordSet": "密码设置成功",
+      "profileUpdated": "资料已更新"
     }
   },
   "dashboard": {
