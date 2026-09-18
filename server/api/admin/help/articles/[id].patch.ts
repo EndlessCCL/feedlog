@@ -34,6 +34,7 @@ export default defineEventHandler(async (event) => {
   const contentChanged = title !== existing.title || description !== existing.description || content !== existing.content
 
   const updates: Record<string, unknown> = {}
+  if (body.aiEnabled !== undefined) updates.aiEnabled = body.aiEnabled
 
   if (body.collectionId && body.collectionId !== existing.collectionId) {
     const [collection] = await db

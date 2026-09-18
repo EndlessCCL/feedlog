@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import draggable from 'vuedraggable'
 import { toast } from 'vue-sonner'
-import type { HelpCollectionFormValue } from '~/components/help/HelpCollectionDialog.vue'
+import type { HelpCollectionFormValue } from '#layers/feedlog/app/components/help/HelpCollectionDialog.vue'
 import type { HelpArticleStatus, HelpCollectionIcon } from '#layers/feedlog/shared/constants/help'
 
 definePageMeta({ layout: 'dashboard', middleware: 'admin' })
@@ -9,6 +9,7 @@ definePageMeta({ layout: 'dashboard', middleware: 'admin' })
 interface InlineArticle {
   id: string
   title: string
+  aiEnabled: boolean
   status: HelpArticleStatus
   position: number
   updatedAt: string
@@ -30,6 +31,7 @@ interface FlatArticle {
   shortId: string
   slug: string
   title: string
+  aiEnabled: boolean
   status: HelpArticleStatus
   position: number
   updatedAt: string
@@ -39,6 +41,7 @@ interface FlatArticle {
 const PAGE_SIZE = 10
 
 const { t } = useI18n()
+const { confirm } = useConfirmDialog()
 const localePath = useLocalePath()
 const router = useRouter()
 
@@ -107,17 +110,11 @@ async function refreshAll() {
   await Promise.all([refreshStats(), refreshCollections(), refreshArticles()])
 }
 
-function deselectIn(collectionId: string) {
-  const hidden = new Set(collections.value.find(c => c.id === collectionId)?.articles.map(a => a.id))
-  selected.value = new Set([...selected.value].filter(articleId => !hidden.has(articleId)))
-}
-
 function toggleExpanded(id: string) {
   const next = new Set(expanded.value)
   if (next.has(id)) next.delete(id)
   else next.add(id)
   expanded.value = next
-  if (!next.has(id)) deselectIn(id)
 }
 
 function toggleSelected(id: string) {
@@ -174,7 +171,6 @@ function onCollectionDragStart(event: { oldIndex?: number }) {
   const next = new Set(expanded.value)
   next.delete(dragged.id)
   expanded.value = next
-  deselectIn(dragged.id)
 }
 
 async function onCollectionsDragEnd() {
@@ -203,17 +199,25 @@ async function onArticlesDragEnd(collection: AdminCollection) {
   }
 }
 
-async function runBulk(action: 'publish' | 'unpublish') {
+async function runBulk(action: 'publish' | 'unpublish' | 'ai-visibility', aiEnabled?: boolean) {
   const ids = [...selected.value]
   if (!ids.length) return
+  if (action === 'publish') {
+    const ok = await confirm({
+      title: t('help.admin.bulkPublishTitle', { n: ids.length }, ids.length),
+      confirmText: t('help.admin.publish'),
+      cancelText: t('common.cancel'),
+    })
+    if (!ok) return
+  }
   try {
     const result = await $fetch<{ affected: number }>(`/api/admin/help/articles/bulk-${action}`, {
       method: 'POST',
-      body: { ids },
+      body: { ids, ...(aiEnabled === undefined ? {} : { aiEnabled }) },
     })
     selected.value = new Set()
     await refreshAll()
-    toast.success(t(`help.admin.${action}Result`, { n: result.affected }, result.affected))
+    toast.success(action === 'ai-visibility' ? t('help.admin.aiUpdated') : t(`help.admin.${action}Result`, { n: result.affected }, result.affected))
   }
   catch {
     toast.error(t('help.admin.bulkFailed'))
@@ -298,6 +302,17 @@ function formatDate(iso: string) {
           >
             {{ $t('help.admin.publish') }}
           </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <button type="button" class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border px-3 text-xs font-bold hover:bg-secondary">
+                {{ $t('help.admin.aiVisibility') }}<Icon name="lucide:chevron-down" size="13" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem @select="runBulk('ai-visibility', true)">{{ $t('help.admin.aiEnable') }}</DropdownMenuItem>
+              <DropdownMenuItem @select="runBulk('ai-visibility', false)">{{ $t('help.admin.aiDisable') }}</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </template>
 
@@ -376,6 +391,7 @@ function formatDate(iso: string) {
               {{ article.collection.name }}
             </span>
             <HelpStatusBadge :status="article.status" />
+                      <span v-if="article.aiEnabled" :class="[CHIP, 'gap-1 border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-300']"><Icon name="lucide:sparkles" size="11" />{{ $t('help.admin.aiVisible') }}</span>
             <span class="w-24 shrink-0 text-right text-xs font-medium leading-4 text-muted-foreground">{{ formatDate(article.updatedAt) }}</span>
           </NuxtLink>
         </template>
@@ -467,6 +483,7 @@ function formatDate(iso: string) {
                       </div>
                       <span class="min-w-0 flex-1 truncate text-sm font-semibold leading-5">{{ article.title }}</span>
                       <HelpStatusBadge :status="article.status" />
+                      <span v-if="article.aiEnabled" :class="[CHIP, 'gap-1 border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-300']"><Icon name="lucide:sparkles" size="11" />{{ $t('help.admin.aiVisible') }}</span>
                       <span class="w-24 shrink-0 text-right text-xs font-medium leading-4 text-muted-foreground">{{ formatDate(article.updatedAt) }}</span>
                     </NuxtLink>
                   </template>

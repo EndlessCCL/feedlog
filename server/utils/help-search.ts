@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm'
 import type { SQL } from 'drizzle-orm'
-import { CJK_RANGE } from '#layers/feedlog/shared/constants/help'
+import { CJK_RANGE } from '../../shared/constants/help'
 
 const CJK_CHAR = new RegExp(`[${CJK_RANGE}]`)
 const WIDE_CHAR = /[ᄀ-ᅟ⺀-꓏ꥠ-꥿가-힣豈-﫿︐-︙︰-﹯＀-｠￠-￦]/

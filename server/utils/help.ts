@@ -64,6 +64,7 @@ export async function findHelpArticleDetail(orgId: string, id: string) {
       description: helpArticle.description,
       content: helpArticle.content,
       status: helpArticle.status,
+      aiEnabled: helpArticle.aiEnabled,
       publishedAt: helpArticle.publishedAt,
       createdAt: helpArticle.createdAt,
       updatedAt: helpArticle.updatedAt,

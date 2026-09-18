@@ -32,6 +32,7 @@ export const helpArticle = pgTable('help_article', {
   title: varchar({ length: 200 }).notNull(),
   description: varchar({ length: 300 }),
   content: text().notNull(),
+  aiEnabled: boolean('ai_enabled').notNull().default(true),
   tsv: tsvector().notNull(),
   position: integer().notNull(),
   publishedAt: timestamp('published_at', { withTimezone: true }),

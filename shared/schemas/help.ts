@@ -25,6 +25,7 @@ export const createHelpArticleSchema = z.object({
   description: z.string().trim().max(300, 'Description must be 300 characters or less').nullable().optional(),
   content: z.string().default(''),
   publish: z.boolean().default(false),
+  aiEnabled: z.boolean().default(true),
 })
 
 export const updateHelpArticleSchema = z.object({
@@ -33,6 +34,7 @@ export const updateHelpArticleSchema = z.object({
   description: z.string().trim().max(300, 'Description must be 300 characters or less').nullable().optional(),
   content: z.string().optional(),
   status: z.enum(HELP_ARTICLE_STATUSES).optional(),
+  aiEnabled: z.boolean().optional(),
 })
 
 export const reorderHelpArticleSchema = z.object({
@@ -43,3 +45,5 @@ export const reorderHelpArticleSchema = z.object({
 export const bulkHelpArticleSchema = z.object({
   ids: z.array(z.uuid()).min(1, 'IDs are required'),
 })
+
+export const bulkHelpAiVisibilitySchema = bulkHelpArticleSchema.extend({ aiEnabled: z.boolean() })
