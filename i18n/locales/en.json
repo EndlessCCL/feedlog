@@ -50,6 +50,7 @@
     "workspace": "Workspace",
     "sso": "Single Sign-On",
     "dashboard": "Dashboard",
+    "editProfile": "Edit Profile",
     "changePassword": "Change Password",
     "widget": "Widget"
   },
@@ -370,6 +371,22 @@
       "setSubtitle": "Add a password to your account",
       "submit": "Update Password"
     },
+    "profile": {
+      "title": "Edit Profile",
+      "subtitle": "Update your display name and avatar",
+      "name": "Display name",
+      "namePlaceholder": "How you appear to others",
+      "changeAvatar": "Change avatar",
+      "removeAvatar": "Remove avatar",
+      "submit": "Save",
+      "nameRequired": "Display name is required",
+      "nameTooLong": "Display name must be 50 characters or fewer",
+      "invalidImage": "Choose a valid PNG, JPEG, or WebP image",
+      "imageTooManyPixels": "Image must be 24 megapixels or smaller",
+      "imageTooLarge": "Image must be 5 MB or smaller",
+      "uploadFailed": "Failed to upload avatar",
+      "saveFailed": "Failed to update profile"
+    },
     "resetPage": {
       "successTitle": "Password Reset",
       "successBody": "Your password has been reset successfully.",
@@ -429,7 +446,8 @@
     "success": {
       "verificationResent": "Verification email resent",
       "passwordUpdated": "Password updated",
-      "passwordSet": "Password set successfully"
+      "passwordSet": "Password set successfully",
+      "profileUpdated": "Profile updated"
     }
   },
   "dashboard": {

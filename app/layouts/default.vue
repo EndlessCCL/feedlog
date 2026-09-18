@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { resolveAttachmentUrl } from '~/utils/attachment'
+
 const { signOut } = useAuth()
 const { data: session } = await useAuthSession()
 const localePath = useLocalePath()
@@ -37,10 +39,12 @@ const initials = computed(() => {
 
 // Fall back to initials when avatar image fails to load
 const avatarError = ref(false)
+const avatarUrl = computed(() => resolveAttachmentUrl(user.value?.image))
 watch(user, () => { avatarError.value = false })
 
 const { isOpen: showLoginModal, open: openLoginModal } = useLoginModal()
 const showChangePassword = ref(false)
+const showEditProfile = ref(false)
 
 // Kept visible and asking for a direct sign-in when used: hiding them reads as a
 // broken page to the people most likely to arrive this way.
@@ -50,6 +54,14 @@ function onChangePassword() {
     return
   }
   showChangePassword.value = true
+}
+
+function onEditProfile() {
+  if (isSsoSession.value) {
+    openLoginModal(LOCAL_AUTH_REASON)
+    return
+  }
+  showEditProfile.value = true
 }
 
 const portalOrg = usePortalOrg()
@@ -137,7 +149,7 @@ watch(() => route.path, () => { mobileNavOpen.value = false })
             <DropdownMenuTrigger as-child>
               <button class="flex items-center rounded-full border border-border bg-card hover:border-primary transition-colors focus:outline-none p-1">
                 <Avatar class="w-8 h-8">
-                  <img v-if="user.image && !avatarError" :src="user.image" :alt="user.name" class="aspect-square size-full rounded-full object-cover" referrerpolicy="no-referrer" @error="avatarError = true">
+                  <img v-if="avatarUrl && !avatarError" :src="avatarUrl" :alt="user.name" class="aspect-square size-full rounded-full object-cover" referrerpolicy="no-referrer" @error="avatarError = true">
                   <!-- Brand accent (not a neutral gray) so identity chips carry the
                        brand; derived in deriveBrandVars. -->
                   <AvatarFallback v-else class="bg-accent text-accent-foreground text-sm font-bold">
@@ -154,6 +166,10 @@ watch(() => route.path, () => { mobileNavOpen.value = false })
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <DropdownMenuItem @click="onEditProfile">
+                <Icon name="lucide:user-round-pen" size="16" class="mr-2" />
+                {{ $t('nav.editProfile') }}
+              </DropdownMenuItem>
               <DropdownMenuItem @click="onChangePassword">
                 <Icon name="lucide:key-round" size="16" class="mr-2" />
                 {{ $t('nav.changePassword') }}
@@ -200,6 +216,7 @@ watch(() => route.path, () => { mobileNavOpen.value = false })
     <!-- Login modal (global, controlled via useLoginModal) -->
     <LoginModal v-model:open="showLoginModal" />
     <ChangePasswordDialog v-model:open="showChangePassword" />
+    <EditProfileDialog v-model:open="showEditProfile" />
 
     <!-- Page content (header is position:fixed, so add top padding equal to header height) -->
     <main class="flex-1 w-full max-w-[1200px] mx-auto flex flex-col md:flex-row gap-8 px-4 md:px-6 lg:px-10 pt-20 md:pt-28 pb-6 md:pb-8">

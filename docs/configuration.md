@@ -277,6 +277,36 @@ The domain must be verified with your email provider.
 
 ---
 
+## Profile avatars
+
+Signed-in users can edit their display name and avatar from the account menu in
+both the portal and dashboard. Avatars use the configured blob provider; no
+external image service is required. Product-SSO and anonymous sessions must sign
+in directly before editing a global account profile.
+
+- Select PNG, JPEG, or WebP files up to 5 MiB and 24 million pixels.
+- The browser checks the file signature and dimensions before decoding it, then
+  exports a static PNG with a maximum edge of 512 pixels (no upscaling). Animated
+  images become a still image. SVG and GIF are not accepted.
+- The preview uses the same centered circular mask as the account menu. The
+  underlying image keeps its aspect ratio; there is no manual crop or rotation.
+- Selecting or cancelling does not upload a file. Saving uploads the prepared
+  image and then updates the profile. If uploading succeeds but updating the
+  profile fails, retrying in the same dialog reuses that upload.
+- `POST /api/profile/avatar` accepts a raw image body and requires a local account
+  session. It limits the body to 5 MiB while reading and independently checks
+  actual image type and dimensions (maximum 512 × 512). Server checks inspect
+  metadata, not a full pixel decode; no native image decoder is required.
+- Avatars are stored under `{UPLOAD_PREFIX}/avatars/{userId}/` and served through
+  `/api/files/…`. Existing OAuth avatar URLs remain supported. Removing an avatar
+  clears the profile reference; old files are not automatically deleted because
+  existing notification payloads may still refer to them.
+- General feedback attachments retain their existing upload rules.
+
+The metadata reader is the MIT-licensed `image-meta` package already used by
+Nuxt Image, pinned as a direct dependency. Its copyright and license notice are
+included in [third-party notices](./third-party-notices.md).
+
 ## Platform notes
 
 ### Cloudflare Workers
