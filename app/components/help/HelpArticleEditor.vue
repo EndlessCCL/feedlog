@@ -11,6 +11,7 @@ interface ArticleDetail {
   title: string
   description: string | null
   content: string
+  aiEnabled: boolean
   status: HelpArticleStatus
   publishedAt: string | null
   createdAt: string
@@ -45,7 +46,7 @@ const { data: collectionsData } = await useFetch<{ data: CollectionOption[] }>('
 })
 const collections = computed(() => collectionsData.value?.data ?? [])
 
-const form = reactive({ title: '', description: '', content: '' })
+const form = reactive({ title: '', description: '', content: '', aiEnabled: true })
 const draftCollectionId = ref(props.collectionId ?? '')
 const saving = ref(false)
 const pickerOpen = ref(false)
@@ -59,6 +60,7 @@ function syncForm() {
   form.title = article.value?.title ?? ''
   form.description = article.value?.description ?? ''
   form.content = article.value?.content ?? ''
+  form.aiEnabled = article.value?.aiEnabled ?? true
 }
 syncForm()
 watch(() => article.value?.id, syncForm)
@@ -66,7 +68,8 @@ watch(() => article.value?.id, syncForm)
 const dirty = computed(() =>
   form.title !== (article.value?.title ?? '')
   || form.description !== (article.value?.description ?? '')
-  || form.content !== (article.value?.content ?? ''))
+  || form.content !== (article.value?.content ?? '')
+  || form.aiEnabled !== (article.value?.aiEnabled ?? true))
 
 const collection = computed(() => isNew.value
   ? collections.value.find(c => c.id === draftCollectionId.value)
@@ -103,6 +106,7 @@ const contentBody = () => ({
   title: form.title.trim(),
   description: form.description.trim() || null,
   content: form.content,
+  aiEnabled: form.aiEnabled,
 })
 
 async function create(publish: boolean) {
@@ -135,6 +139,14 @@ async function saveDraft() {
 }
 
 async function togglePublish() {
+  if (article.value?.status !== 'published') {
+    const ok = await confirm({
+      title: t('help.admin.publishTitle'),
+      confirmText: t('help.admin.publish'),
+      cancelText: t('common.cancel'),
+    })
+    if (!ok) return
+  }
   if (isNew.value) return create(true)
   const next = article.value?.status === 'published' ? 'archived' : 'published'
   if (await patch({ ...contentBody(), status: next })) toast.success(t('help.admin.editor.saved'))
@@ -306,6 +318,14 @@ function goBack() {
               </div>
             </div>
           </div>
+        </div>
+
+        <div class="flex items-start gap-3 rounded-md border border-border bg-background px-3.5 py-3">
+          <div class="min-w-0 flex-1">
+            <label for="allow-ai" class="text-[13px] font-bold leading-[18px]">{{ $t('help.admin.aiUsage') }}</label>
+            <p class="mt-0.5 text-xs leading-[17px] text-muted-foreground">{{ $t('help.admin.aiUsageHint') }}</p>
+          </div>
+          <Switch id="allow-ai" v-model="form.aiEnabled" />
         </div>
 
         <div>

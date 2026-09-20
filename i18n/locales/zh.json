@@ -785,10 +785,10 @@
     "title": "反馈",
     "subtitle": "帮我们把 {product} 做得更好 —— 说说问题和想法",
     "thisProduct": "这个产品",
-    "greeting": "你好,我是反馈助手 —— AI,不是人工客服 👋 说说哪里有问题、或者你希望有什么,我会帮你提交给 {product} 团队。",
+    "greeting": "你好 👋 有关于 {product} 的问题或反馈吗？",
     "placeholder": "说说遇到的问题,或者你的想法……",
     "send": "发送",
-    "thinking": "正在读你的消息……",
+    "thinking": "正在处理你的消息……",
     "close": "关闭",
     "back": "返回",
     "myFeedback": "我的反馈",
@@ -807,7 +807,7 @@
     "uploadFailed": "图片上传失败,请重试。",
     "uploadTooLarge": "图片不能超过 {size}MB。",
     "messages": "消息",
-    "agentTitle": "反馈助手",
+    "agentTitle": "{product} 助手",
     "newConversation": "给我们留言",
     "newBadge": "{count} 条新消息",
     "timeAgoMinute": "{n} 分钟",
@@ -817,7 +817,24 @@
     "timeAgoMonth": "{n} 个月",
     "conversationFullNote": "这个会话已达到长度上限,下一条消息会开启新会话。",
     "conversationFullTitle": "会话已满",
-    "startNewConversation": "开启新会话"
+    "startNewConversation": "开启新会话",
+    "attachedImage": "附加图片",
+    "helpCenter": "帮助中心",
+    "productHelp": "{product} 帮助中心",
+    "backToChat": "返回对话",
+    "openArticle": "在新标签页打开文章",
+    "articleUnavailable": "这篇文章已无法访问。",
+    "earlierMessages": "更早的消息",
+    "retryReply": "重试回复",
+    "refreshStatus": "刷新状态",
+    "tooManyParts": "请减少图片数量，每条消息最多包含 10 个内容块。",
+    "actions": {
+      "feedback_created": "已创建反馈",
+      "feedback_updated": "已修改反馈",
+      "feedback_upvoted": "已投票",
+      "feedback_comment_added": "已添加评论",
+      "feedback_comment_updated": "已修改评论"
+    }
   },
   "help": {
     "admin": {
@@ -903,7 +920,16 @@
         "deleteDescription": "这篇文章及其网址将被永久移除，且无法撤销。",
         "deleted": "文章已删除",
         "deleteFailed": "文章删除失败"
-      }
+      },
+      "publishTitle": "发布这篇文章？",
+      "bulkPublishTitle": "发布选中的 {n} 篇文章？",
+      "aiUsage": "允许 AI 使用",
+      "aiVisibility": "AI 可见性",
+      "aiVisible": "AI 可见",
+      "aiEnable": "允许 AI 使用",
+      "aiDisable": "停止 AI 使用",
+      "aiUpdated": "已更新 AI 使用设置",
+      "aiUsageHint": "允许 Agent 使用这篇文章回答问题，即使读者无法查看该文章。"
     },
     "portal": {
       "heading": "有什么可以帮您？",

@@ -33,6 +33,7 @@ export default defineEventHandler(async (event) => {
         title: body.title,
         description,
         content: body.content,
+        aiEnabled: body.aiEnabled,
         tsv: buildHelpTsv(body.title, description, body.content),
         position,
         publishedAt: body.publish ? new Date() : null,

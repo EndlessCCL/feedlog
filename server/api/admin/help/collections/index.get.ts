@@ -31,6 +31,7 @@ export default defineEventHandler(async (event) => {
           collectionId: helpArticle.collectionId,
           title: helpArticle.title,
           status: helpArticle.status,
+      aiEnabled: helpArticle.aiEnabled,
           position: helpArticle.position,
           updatedAt: helpArticle.updatedAt,
         })
