@@ -42,6 +42,13 @@ function sanitize(html: string) {
 .widget-markdown :deep(.md-editor-preview li > :is(p, ul, ol)) { margin-block: 0.2em; }
 .widget-markdown :deep(.md-editor-preview > :first-child) { margin-top: 0; }
 .widget-markdown :deep(.md-editor-preview > :last-child) { margin-bottom: 0; }
+:is(.widget-markdown, .widget-article-markdown) :deep(.md-editor-preview a) {
+  border-block-end: none;
+  text-underline-offset: 0.15em;
+}
+:is(.widget-markdown, .widget-article-markdown) :deep(.md-editor-preview a:hover) {
+  text-decoration: underline;
+}
 :is(.widget-markdown, .widget-article-markdown) :deep(a[target='_blank']::after) {
   width: 0.9em;
   height: 0.9em;
