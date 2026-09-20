@@ -2,7 +2,22 @@
 import DOMPurify from 'dompurify'
 defineProps<{ text: string; variant?: 'chat' | 'article' }>()
 const id = useId()
-const sanitize = (html: string) => DOMPurify.sanitize(html, { USE_PROFILES: { html: true }, ADD_ATTR: ['target'], FORBID_TAGS: ['style', 'form', 'input', 'button'] })
+function sanitize(html: string) {
+  const fragment = DOMPurify.sanitize(html, {
+    USE_PROFILES: { html: true },
+    ADD_ATTR: ['target'],
+    FORBID_TAGS: ['style', 'form', 'input', 'button'],
+    RETURN_DOM_FRAGMENT: true,
+  })
+  // Links must not replace the iframe and leave the customer outside the chat.
+  fragment.querySelectorAll('a[href]').forEach(link => {
+    link.setAttribute('target', '_blank')
+    link.setAttribute('rel', 'noopener noreferrer')
+  })
+  const container = document.createElement('div')
+  container.append(fragment)
+  return container.innerHTML
+}
 </script>
 
 <template>
@@ -27,5 +42,12 @@ const sanitize = (html: string) => DOMPurify.sanitize(html, { USE_PROFILES: { ht
 .widget-markdown :deep(.md-editor-preview li > :is(p, ul, ol)) { margin-block: 0.2em; }
 .widget-markdown :deep(.md-editor-preview > :first-child) { margin-top: 0; }
 .widget-markdown :deep(.md-editor-preview > :last-child) { margin-bottom: 0; }
+:is(.widget-markdown, .widget-article-markdown) :deep(a[target='_blank']::after) {
+  width: 0.9em;
+  height: 0.9em;
+  margin-inline-start: 0.2em;
+  vertical-align: baseline;
+  opacity: 0.8;
+}
 .widget-markdown :deep(pre) { max-width: 100%; overflow-x: auto; }
 </style>
