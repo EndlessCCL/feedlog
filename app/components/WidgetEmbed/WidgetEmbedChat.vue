@@ -394,6 +394,11 @@ async function closeArticle() {
 </template>
 
 <style scoped>
+[data-author='customer'] :deep(.md-editor-preview a) {
+  color: var(--primary-foreground);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .typing-dot { animation: typing 1.2s ease-in-out infinite; }
