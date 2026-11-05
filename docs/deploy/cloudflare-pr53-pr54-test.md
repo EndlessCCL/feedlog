@@ -8,7 +8,7 @@ This branch combines PR #53 (lazy Inbox runtime loading) and PR #54 (Cloudflare 
 - Branch: `test/cf-pr53-pr54-neon`
 - Worker name: `feedlog` (must match `wrangler.toml`)
 - Build command: `pnpm build:cf`
-- Deploy command: `pnpm deploy:cf`
+- Deploy command: `pnpm deploy:cf` (uses a pinned Wrangler CLI via `pnpm dlx`; no global Wrangler installation required)
 - Node.js: 22
 
 The Hyperdrive `POSTGRES` binding contains the test configuration ID supplied for this review. Create the `feedlog-inbox` queue before deploying; its producer and consumer are configured in `wrangler.toml`. No R2 bucket is required by this branch.
