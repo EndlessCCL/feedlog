@@ -37,7 +37,9 @@ id = "437c9f481c4540fb8dc3648ac8d5ae54"
 # OPENAI_API_KEY, etc.) must be set via `wrangler secret put <NAME>` or via
 # the Deploy Button form (backed by .dev.vars.example), NOT declared here.
 [vars]
-BETTER_AUTH_URL = "https://your-worker.workers.dev"
+BETTER_AUTH_URL = "https://feedlog.endlessccl.workers.dev"
+AUTH_EMAIL_ENABLED = "true"
+AUTH_EMAIL_VERIFY = "false"
 # GOOGLE_CLIENT_ID = "your-google-oauth-client-id.apps.googleusercontent.com"
 
 # Secrets to configure via `wrangler secret put` (manual-deploy path):
