@@ -139,9 +139,6 @@
     "bindings": {
       "POSTGRES": {
         "description": "Hyperdrive config that accelerates your Postgres connection. Create one or pick an existing config. Needs a Postgres URL with the `vector` extension enabled (Neon and Supabase both support it)."
-      },
-      "BLOB": {
-        "description": "R2 bucket for uploaded files (images on feedback posts). Create a new bucket or pick an existing one. Skipping this disables file uploads but the app still works."
       }
     }
   }
