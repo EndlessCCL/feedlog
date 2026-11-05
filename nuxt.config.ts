@@ -210,7 +210,8 @@ export default defineNuxtConfig({
       [!process.env.NITRO_PRESET?.startsWith('cloudflare') && !process.env.NITRO_PRESET?.startsWith('vercel') && process.env.VERCEL !== '1'
         ? '*/5 * * * *' : '0 3 * * *']: ['inbox:schedule'],
     },
-    vercel: { functions: { experimentalTriggers: [{ type: 'queue/v2beta', topic: 'feedlog-inbox', retryAfterSeconds: 60 }] } },
+    // The private queue function is emitted by scripts/prepare-vercel-queue.mjs.
+    // A trigger on the shared SSR function would also make website routes private.
     // Workers use pg's JavaScript client; its optional native addon is Node-only.
     alias: process.env.NITRO_PRESET?.startsWith('cloudflare')
       ? {

@@ -50,6 +50,11 @@ Save the `DATABASE_URL` — Vercel will inject it as an env var.
   build).
 - Output directory: `.output` (default).
 
+The build also emits a separate private Inbox queue function. Its generated
+`.vc-config.json` declares both the topic and consumer group required by the
+Build Output API. Keep queue triggers off the shared website function: Vercel
+makes functions with queue triggers private, including all routes they serve.
+
 ### 3. Set environment variables
 
 Vercel dashboard → your project → Settings → Environment Variables.

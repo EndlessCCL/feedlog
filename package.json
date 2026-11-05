@@ -5,7 +5,7 @@
   "scripts": {
     "build": "NODE_OPTIONS=\"--max-old-space-size=4096 $NODE_OPTIONS\" nuxt build && mkdir -p .output/server/db && cp -r server/db/migrations .output/server/db/migrations",
     "build:cf": "node scripts/check-build-dependencies.mjs && NITRO_PRESET=cloudflare-module NODE_OPTIONS=\"$NODE_OPTIONS --max-old-space-size=8192\" pnpm build",
-    "build:vercel": "pnpm migrate && NITRO_PRESET=vercel pnpm build",
+    "build:vercel": "pnpm migrate && NITRO_PRESET=vercel pnpm build && node scripts/prepare-vercel-queue.mjs",
     "deploy:cf": "pnpm dlx wrangler@4.157.0 deploy --cwd .output",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
