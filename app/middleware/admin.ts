@@ -1,23 +1,25 @@
-import { resolveOnboardingStatus } from '#layers/feedlog/app/composables/useOnboarding'
+import { dashboardLoginRedirect } from '#layers/feedlog/shared/auth/dashboard'
 
 // /dashboard/* gate: any org staff (owner / manager / contributor) may enter.
 // Fine-grained capability checks happen inside individual pages / API calls.
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const { data } = await useAuthSession()
+  const localePath = useLocalePath()
+  const requestLocalLogin = () => navigateTo(dashboardLoginRedirect(to.fullPath, localePath('/')))
 
-  if (!data.value?.user) {
-    return navigateTo('/')
+  if (!data.value?.user || data.value.user.isAnonymous) {
+    return requestLocalLogin()
   }
 
-  // An SSO session is not bounced: the server honours its real member role, and
-  // the orgList check below still gates it — for such a session that list holds
-  // only the org that minted it.
+  if ((data.value.session as { ssoOrgId?: string | null }).ssoOrgId) {
+    return requestLocalLogin()
+  }
+
   const orgList = (data.value as { orgList?: { role: string }[] }).orgList
   if (!orgList || orgList.length === 0) {
     return navigateTo('/')
   }
   const { canVisit, entry, notifyDenied } = useDashboardAccess()
-  const localePath = useLocalePath()
   const path = to.path.replace(/^\/(?:en|zh)(?=\/|$)/, '')
   if (!canVisit(path)) {
     if (import.meta.client) notifyDenied()
